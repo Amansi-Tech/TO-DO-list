@@ -1,0 +1,211 @@
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>To-Do List</title>
+		<style>
+		
+			* {
+				list-style-type: none;
+				padding: 0;
+				outline: none;
+			}
+			body {
+				background:black;
+			}
+			h1 {
+				text-align: center;
+                font-size: 30px;
+                font-weight: bold;
+                font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+                color: aliceblue;
+			}
+			form {
+				display: flex;
+				flex-direction: column;
+				gap: 1rem;
+				padding: 1rem;
+			}
+			form input {
+				padding: 0.5rem 0.6rem;
+				border-radius: 0.4rem;
+				border: 1px solid lightgray;
+			}
+			form button {
+				padding: 0.5rem 1rem;
+				border-radius: 0.4rem;
+				background-color: blue;
+                border: none;
+				color: white;
+				cursor: pointer;
+			}
+			.wrapper {
+				display: grid;
+				grid-template-columns: repeat(2, 1fr);
+				gap: 1rem;
+				padding: 0.6rem;
+				margin-top: 2rem;
+			}
+			.card {
+				background-color:white;
+				padding: 0.6rem 1rem;
+				min-height: 15rem;
+				border-radius: 2rem;
+			}
+			.card h2 {
+                text-align: center;
+				font-size: 1.3rem;
+			}
+            ::placeholder{
+               
+                font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            }
+			li {
+				margin-bottom: 0.5rem;
+				cursor: pointer;
+				display: flex;
+				flex-direction: column;
+				gap: 0.5rem;
+			}
+			.completed {
+				text-decoration: line-through;
+				color: gray;
+			}
+			.control {
+				display: flex;
+				gap: 2rem;
+			}
+			.control button {
+				padding: 0.5rem 1rem;
+				border: none;
+				border-radius: 0.4rem;
+				color: white;
+			}
+			#edit {
+				background-color: blue;
+			}
+			#delete {
+				background-color: red;
+			}
+			.error {
+				color: red;
+				font-size: 12px;
+			}
+			.foot{
+				text-align: center;
+				position: relative;
+				top: 16px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 3px;
+			}
+			.foot img{
+				width: 100px;
+			}
+			.foot h1{
+				font-size: 20px;
+				font-weight: bold;
+			}
+			@media screen and (max-width: 768px) {
+				.wrapper {
+					grid-template-columns: 1fr;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<h1>My To-Do List</h1>
+		<form>
+			<div style="display: grid; gap: 0.2rem">
+				<input type="text" id="new-task" placeholder="Enter a new task" />
+				<span class="error" style="padding: 0 1rem"></span>
+			</div>
+			<button id="add-task">Add Task</button>
+		</form>
+		<div class="wrapper">
+			<div class="card">
+				<h2>To-do tasks</h2>
+				<ul id="todo-list"></ul>
+			</div>
+			<div class="card">
+				<h2>Completed tasks</h2>
+				<ul id="completed-tasks"></ul>
+			</div>
+            <br>
+		</div>
+		<div class="footer">
+			<div class="foot">
+				<h1>Made with Love By &copy;Amansi Codes</h1>
+				<img src="./Amansi_codes__4_-removebg-preview.png" alt="">
+			</div>
+		</div>
+		<script src="projects.js"></script>
+	</body>
+    <script>
+const addTaskButton = document.querySelector('#add-task');
+const newTaskInput = document.querySelector('#new-task');
+const todoList = document.querySelector('#todo-list');
+const completedTasksList = document.querySelector('#completed-tasks');
+const form = document.querySelector('form');
+
+form.addEventListener('submit', (e) => e.preventDefault());
+
+// Function to add a new task
+function addTask() {
+	const error = document.querySelector('.error');
+	const taskText = newTaskInput.value.trim();
+	if (taskText === '') return (error.textContent = '*Invalid task');
+
+	// Create a new list item
+	const listItem = document.createElement('li');
+	listItem.textContent = taskText;
+	listItem.id = `task-${Date.now()}`;
+	const control = document.createElement('div');
+	control.classList.add('control');
+
+	const editButton = document.createElement('button');
+	editButton.textContent = 'Edit';
+	editButton.id = 'edit';
+	editButton.addEventListener('click', () => {
+		const newText = prompt('Edit your task', listItem.firstChild.textContent);
+		if (newText !== null && newText.trim() !== '') {
+			listItem.firstChild.textContent = newText.trim();
+		}
+	});
+
+	// Add delete button
+	const deleteButton = document.createElement('button');
+	deleteButton.textContent = 'Delete';
+	deleteButton.id = 'delete';
+	deleteButton.addEventListener('click', () => {
+		listItem.remove();
+	});
+
+	// Toggle task completion and move to completed tasks
+	listItem.addEventListener('click', () => {
+		if (listItem.classList.contains('completed')) {
+			todoList.appendChild(listItem);
+			listItem.classList.remove('completed');
+		} else {
+			completedTasksList.appendChild(listItem);
+			listItem.classList.add('completed');
+		}
+	});
+
+	control.appendChild(editButton);
+	control.appendChild(deleteButton);
+	listItem.appendChild(control);
+	todoList.appendChild(listItem);
+
+	// Clear the input field
+	newTaskInput.value = '';
+}
+
+// Attach event listener to the button
+addTaskButton.addEventListener('click', addTask);
+    </script>
+</html>
+
